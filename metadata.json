@@ -1,0 +1,5 @@
+{
+  "name": "iMessage Web - Apple Style Real-time Chat",
+  "description": "Interface de chat em tempo real inspirada no ecossistema Apple (macOS & iOS iMessage) com suporte a WebSockets, múltiplos participantes, reações Tapback e design refinado.",
+  "requestFramePermissions": []
+}

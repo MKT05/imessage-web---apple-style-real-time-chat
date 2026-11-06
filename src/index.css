@@ -1,0 +1,63 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --apple-font: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "SF Pro", "Inter", "Helvetica Neue", sans-serif;
+  }
+
+  body {
+    font-family: var(--apple-font);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    user-select: none;
+  }
+}
+
+/* Apple style scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(140, 140, 150, 0.25);
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(140, 140, 150, 0.45);
+}
+
+/* Glassmorphism helpers */
+.mac-glass {
+  background: rgba(255, 255, 255, 0.72);
+  backdrop-filter: blur(30px) saturate(190%);
+  -webkit-backdrop-filter: blur(30px) saturate(190%);
+}
+
+.dark .mac-glass {
+  background: rgba(28, 28, 30, 0.78);
+  backdrop-filter: blur(30px) saturate(190%);
+  -webkit-backdrop-filter: blur(30px) saturate(190%);
+}
+
+.mac-sidebar-glass {
+  background: rgba(246, 246, 248, 0.85);
+  backdrop-filter: blur(25px);
+  -webkit-backdrop-filter: blur(25px);
+}
+
+.dark .mac-sidebar-glass {
+  background: rgba(22, 22, 24, 0.85);
+  backdrop-filter: blur(25px);
+  -webkit-backdrop-filter: blur(25px);
+}
+
+/* Vibrancy border */
+.apple-border {
+  border-color: rgba(0, 0, 0, 0.08);
+}
+.dark .apple-border {
+  border-color: rgba(255, 255, 255, 0.08);
+}
