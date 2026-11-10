@@ -1,11 +1,5 @@
 import { FC } from 'react';
-import {
-  Video,
-  Phone,
-  Info,
-  Users,
-  Sparkles,
-} from 'lucide-react';
+import { ArrowLeft, Info, Sparkles, Users } from 'lucide-react';
 import { ChatConversation } from '../types/chat';
 
 interface ChatHeaderProps {
@@ -13,6 +7,7 @@ interface ChatHeaderProps {
   onToggleInfo: () => void;
   infoOpen: boolean;
   onSimulateIncoming: () => void;
+  onBack: () => void;
 }
 
 export const ChatHeader: FC<ChatHeaderProps> = ({
@@ -20,88 +15,76 @@ export const ChatHeader: FC<ChatHeaderProps> = ({
   onToggleInfo,
   infoOpen,
   onSimulateIncoming,
+  onBack,
 }) => {
   return (
-    <header className="h-14 border-b border-black/[0.08] dark:border-white/[0.08] px-4 flex items-center justify-between mac-glass select-none relative z-10">
-      {/* Contact / Group Info */}
-      <div className="flex items-center gap-3">
-        <div className="relative">
-          <img
-            src={conversation.avatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100'}
-            alt={conversation.name}
-            className="w-9 h-9 rounded-full object-cover shadow-sm border border-black/10 dark:border-white/10"
-          />
-          {!conversation.isGroup && (
-            <span className="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full border-2 border-white dark:border-neutral-900 bg-emerald-500" />
+    <header className="flex h-[76px] shrink-0 items-center justify-between gap-3 border-b border-[#e5e5ea] bg-white px-4 sm:px-7">
+      <div className="flex min-w-0 items-center gap-3">
+        <button
+          type="button"
+          onClick={onBack}
+          aria-label="Voltar para conversas"
+          className="-ml-2 flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-[#007aff] transition hover:bg-[#f2f7ff] md:hidden"
+        >
+          <ArrowLeft className="h-5 w-5" />
+        </button>
+        <span className="relative block shrink-0">
+          {conversation.isGroup ? (
+            <span className="flex h-11 w-11 items-center justify-center rounded-full bg-gradient-to-br from-[#b7d9ff] to-[#e0eaff] text-[#0066cc]">
+              <Users className="h-[18px] w-[18px]" />
+            </span>
+          ) : (
+            <>
+              <img
+                src={conversation.avatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100'}
+                alt=""
+                className="h-11 w-11 rounded-full object-cover ring-1 ring-black/[0.05]"
+              />
+              <span className="absolute bottom-0 right-0 h-3 w-3 rounded-full border-2 border-white bg-[#34c759]" />
+            </>
           )}
-        </div>
-
-        <div>
-          <div className="flex items-center gap-1.5">
-            <h2 className="text-sm font-semibold text-neutral-900 dark:text-neutral-100 tracking-tight leading-tight">
-              {conversation.name}
-            </h2>
-            {conversation.isGroup && (
-              <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-neutral-200/60 dark:bg-neutral-800 text-neutral-600 dark:text-neutral-300 font-medium">
-                {conversation.participants.length}
-              </span>
+        </span>
+        <div className="min-w-0">
+          <h2 className="truncate text-[15px] font-semibold tracking-[-0.02em] text-[#1d1d1f]">
+            {conversation.name}
+          </h2>
+          <p className="mt-0.5 flex items-center gap-1.5 truncate text-[12px] text-[#86868b]">
+            {conversation.isGroup ? (
+              <>
+                <Users className="h-3 w-3 shrink-0" />
+                <span>{conversation.participants.length} participantes</span>
+              </>
+            ) : (
+              <>
+                <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-[#34c759]" />
+                <span>Ativo agora</span>
+              </>
             )}
-          </div>
-          <p className="text-[11px] text-neutral-500 dark:text-neutral-400 leading-none mt-0.5 flex items-center gap-1">
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 inline-block" />
-            {conversation.isGroup
-              ? `${conversation.participants.map((p) => p.name.split(' ')[0]).join(', ')}`
-              : 'iMessage • Ativo agora'}
           </p>
         </div>
       </div>
 
-      {/* Action Buttons */}
-      <div className="flex items-center gap-1.5">
-        {/* Simulate incoming test message button */}
+      <div className="flex shrink-0 items-center gap-1.5 sm:gap-2">
         <button
           type="button"
           onClick={onSimulateIncoming}
-          title="Simular mensagem recebida instantânea para teste"
-          className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-medium text-[#007aff] hover:bg-[#007aff]/10 transition-colors"
+          title="Enviar uma mensagem de demonstração"
+          className="flex h-9 items-center gap-1.5 rounded-full px-3 text-[12px] font-medium text-[#007aff] transition hover:bg-[#f2f7ff]"
         >
-          <Sparkles className="w-3.5 h-3.5" />
-          <span className="hidden sm:inline text-[11px]">Simular Mensagem</span>
+          <Sparkles className="h-4 w-4" />
+          <span className="hidden sm:inline">Testar conversa</span>
         </button>
-
-        {/* FaceTime Video Call */}
-        <button
-          type="button"
-          aria-label="Iniciar chamada de vídeo FaceTime"
-          title="FaceTime Vídeo"
-          className="p-2 rounded-lg hover:bg-neutral-200/60 dark:hover:bg-neutral-800 transition-colors text-neutral-700 dark:text-neutral-200"
-        >
-          <Video className="w-4 h-4" />
-        </button>
-
-        {/* FaceTime Audio Call */}
-        <button
-          type="button"
-          aria-label="Iniciar chamada de áudio"
-          title="FaceTime Áudio"
-          className="p-2 rounded-lg hover:bg-neutral-200/60 dark:hover:bg-neutral-800 transition-colors text-neutral-700 dark:text-neutral-200"
-        >
-          <Phone className="w-4 h-4" />
-        </button>
-
-        {/* Info button */}
         <button
           type="button"
           onClick={onToggleInfo}
           aria-label="Detalhes da conversa"
+          aria-pressed={infoOpen}
           title="Detalhes da conversa"
-          className={`p-2 rounded-lg transition-colors ${
-            infoOpen
-              ? 'bg-[#007aff] text-white shadow-sm'
-              : 'hover:bg-neutral-200/60 dark:hover:bg-neutral-800 text-neutral-700 dark:text-neutral-200'
+          className={`flex h-9 w-9 items-center justify-center rounded-full transition ${
+            infoOpen ? 'bg-[#eaf3ff] text-[#007aff]' : 'text-[#6e6e73] hover:bg-[#f5f5f7] hover:text-[#1d1d1f]'
           }`}
         >
-          <Info className="w-4 h-4" />
+          <Info className="h-[18px] w-[18px]" />
         </button>
       </div>
     </header>

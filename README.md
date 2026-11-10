@@ -1,4 +1,4 @@
-#  iMessage Web - Chat em Tempo Real (Estilo Apple)
+# Mensagens — Chat em tempo real
 
 Uma aplicação web de chat em tempo real com interface inspirada no iMessage. O servidor em **Node.js** serve a interface, gerencia conexões **WebSocket** e persiste mensagens em `messages.json`.
 

@@ -54,18 +54,18 @@ export const NewChatModal: FC<NewChatModalProps> = ({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-md animate-in fade-in duration-150"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-[#1d1d1f]/25 p-4 backdrop-blur-sm animate-in fade-in duration-150"
       onClick={onClose}
     >
       <div
-        className="w-full max-w-md bg-white/95 dark:bg-[#242426]/95 backdrop-blur-2xl rounded-2xl shadow-2xl border border-black/10 dark:border-white/10 overflow-hidden flex flex-col animate-in zoom-in-95 duration-150"
+        className="flex w-full max-w-md flex-col overflow-hidden rounded-[26px] border border-white/80 bg-white shadow-[0_24px_80px_rgba(0,0,0,0.2)] animate-in zoom-in-95 duration-150"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="h-12 border-b border-black/[0.08] dark:border-white/[0.08] px-4 flex items-center justify-between">
+        <div className="flex h-[68px] items-center justify-between border-b border-[#e5e5ea] px-6">
           <div className="flex items-center gap-2">
             <UserPlus className="w-4 h-4 text-[#007aff]" />
-            <h3 className="text-sm font-semibold text-neutral-900 dark:text-neutral-100">
+            <h3 className="text-[17px] font-semibold tracking-[-0.025em] text-[#1d1d1f]">
               Nova Mensagem
             </h3>
           </div>
@@ -73,18 +73,18 @@ export const NewChatModal: FC<NewChatModalProps> = ({
             type="button"
             onClick={onClose}
             aria-label="Fechar"
-            className="p-1 rounded-lg hover:bg-neutral-200/60 dark:hover:bg-neutral-800 text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-200 transition-colors"
+            className="flex h-8 w-8 items-center justify-center rounded-full text-[#8e8e93] transition-colors hover:bg-[#f2f2f7] hover:text-[#3a3a3c]"
           >
             <X className="w-4 h-4" />
           </button>
         </div>
 
         {/* Content */}
-        <div className="p-4 space-y-4 text-xs">
+        <div className="space-y-5 p-6 text-[13px]">
           {/* Group mode toggle */}
           {selectedUserIds.length > 1 && (
             <div className="space-y-1.5 animate-in fade-in duration-150">
-              <label className="font-medium text-neutral-700 dark:text-neutral-300 flex items-center gap-1.5">
+              <label className="flex items-center gap-1.5 font-medium text-[#3a3a3c]">
                 <Users className="w-3.5 h-3.5 text-[#007aff]" />
                 <span>Nome do Grupo</span>
               </label>
@@ -92,15 +92,15 @@ export const NewChatModal: FC<NewChatModalProps> = ({
                 type="text"
                 value={groupName}
                 onChange={(e) => setGroupName(e.target.value)}
-                placeholder="Ex: Projeto Apple Watch..."
-                className="w-full px-3 py-2 rounded-xl bg-neutral-100 dark:bg-neutral-800 border border-neutral-300 dark:border-neutral-700 text-xs text-neutral-900 dark:text-neutral-100 focus:outline-none focus:border-[#007aff]"
+                placeholder="Ex: Equipe do projeto..."
+                className="w-full rounded-xl border border-[#d2d2d7] bg-[#f5f5f7] px-3.5 py-2.5 text-[13px] text-[#1d1d1f] placeholder:text-[#8e8e93] focus:border-[#007aff] focus:bg-white focus:outline-none focus:ring-4 focus:ring-[#007aff]/10"
               />
             </div>
           )}
 
           {/* Contact Selection */}
           <div className="space-y-1.5">
-            <span className="font-semibold text-neutral-500 uppercase tracking-wider text-[10px]">
+            <span className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#86868b]">
               Selecione o(s) participante(s):
             </span>
 
@@ -112,10 +112,10 @@ export const NewChatModal: FC<NewChatModalProps> = ({
                     key={user.id}
                     type="button"
                     onClick={() => toggleUserSelection(user.id)}
-                    className={`w-full flex items-center justify-between p-2 rounded-xl transition-colors text-left ${
+                    className={`flex w-full items-center justify-between rounded-2xl border p-2.5 text-left transition-colors ${
                       isSelected
-                        ? 'bg-[#007aff]/10 border border-[#007aff]/30'
-                        : 'hover:bg-neutral-100 dark:hover:bg-neutral-800 border border-transparent'
+                        ? 'border-[#007aff]/30 bg-[#f2f7ff]'
+                        : 'border-transparent hover:bg-[#f5f5f7]'
                     }`}
                   >
                     <div className="flex items-center gap-2.5">
@@ -125,10 +125,10 @@ export const NewChatModal: FC<NewChatModalProps> = ({
                         className="w-8 h-8 rounded-full object-cover"
                       />
                       <div>
-                        <p className="font-medium text-neutral-900 dark:text-neutral-100 text-xs">
+                        <p className="text-[13px] font-medium text-[#1d1d1f]">
                           {user.name}
                         </p>
-                        <p className="text-[10px] text-neutral-400">
+                        <p className="mt-0.5 text-[11px] text-[#86868b]">
                           {user.statusText || 'Disponível'}
                         </p>
                       </div>
@@ -136,9 +136,9 @@ export const NewChatModal: FC<NewChatModalProps> = ({
 
                     <div
                       className={`w-5 h-5 rounded-full flex items-center justify-center border transition-colors ${
-                        isSelected
-                          ? 'bg-[#007aff] border-[#007aff] text-white'
-                          : 'border-neutral-300 dark:border-neutral-600'
+                          isSelected
+                          ? 'border-[#007aff] bg-[#007aff] text-white'
+                          : 'border-[#c7c7cc] bg-white'
                       }`}
                     >
                       {isSelected && <Check className="w-3 h-3 stroke-[3]" />}
@@ -151,11 +151,11 @@ export const NewChatModal: FC<NewChatModalProps> = ({
         </div>
 
         {/* Footer */}
-        <div className="h-12 border-t border-black/[0.08] dark:border-white/[0.08] px-4 flex items-center justify-end gap-2 bg-neutral-50 dark:bg-[#1f1f22]">
+        <div className="flex h-[68px] items-center justify-end gap-2 border-t border-[#e5e5ea] bg-[#fafafd] px-6">
           <button
             type="button"
             onClick={onClose}
-            className="px-3 py-1.5 rounded-lg text-neutral-600 dark:text-neutral-400 hover:bg-neutral-200 dark:hover:bg-neutral-800 transition-colors"
+            className="rounded-full px-4 py-2 text-[13px] font-medium text-[#6e6e73] transition-colors hover:bg-[#f0f0f2]"
           >
             Cancelar
           </button>
@@ -163,10 +163,10 @@ export const NewChatModal: FC<NewChatModalProps> = ({
             type="button"
             onClick={handleCreate}
             disabled={selectedUserIds.length === 0}
-            className={`px-4 py-1.5 rounded-lg font-medium text-white transition-all ${
+            className={`rounded-full px-5 py-2 text-[13px] font-medium text-white transition-all ${
               selectedUserIds.length > 0
-                ? 'bg-[#007aff] hover:bg-[#006ee6] shadow-sm'
-                : 'bg-neutral-300 dark:bg-neutral-700 cursor-not-allowed opacity-60'
+                ? 'bg-[#007aff] hover:bg-[#006ee6]'
+                : 'cursor-not-allowed bg-[#b7d4fa]'
             }`}
           >
             Criar Conversa

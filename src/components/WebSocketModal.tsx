@@ -62,25 +62,25 @@ npm run dev
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-md animate-in fade-in duration-150"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-[#1d1d1f]/25 p-4 backdrop-blur-sm animate-in fade-in duration-150"
       onClick={onClose}
     >
       <div
-        className="w-full max-w-2xl bg-white/95 dark:bg-[#222225]/95 backdrop-blur-2xl rounded-2xl shadow-2xl border border-black/10 dark:border-white/10 overflow-hidden flex flex-col max-h-[85vh] animate-in zoom-in-95 duration-150"
+        className="flex max-h-[88dvh] w-full max-w-2xl flex-col overflow-hidden rounded-[26px] border border-white/80 bg-white shadow-[0_24px_80px_rgba(0,0,0,0.2)] animate-in zoom-in-95 duration-150"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="h-14 border-b border-black/[0.08] dark:border-white/[0.08] px-5 flex items-center justify-between">
+        <div className="flex h-[72px] items-center justify-between border-b border-[#e5e5ea] px-5 sm:px-6">
           <div className="flex items-center gap-2.5">
-            <div className="p-2 rounded-xl bg-[#007aff]/10 text-[#007aff]">
-              <Server className="w-5 h-5" />
+            <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-[#f2f7ff] text-[#007aff]">
+              <Server className="h-[18px] w-[18px]" />
             </div>
             <div>
-              <h3 className="text-sm font-semibold text-neutral-900 dark:text-neutral-100">
+              <h3 className="text-[15px] font-semibold tracking-[-0.02em] text-[#1d1d1f]">
                 Central de Conexão WebSocket
               </h3>
-              <p className="text-[11px] text-neutral-500 dark:text-neutral-400">
-                Integração do frontend Apple com o backend Node.js
+              <p className="text-[11px] text-[#86868b]">
+                Integração do chat com o servidor Node.js
               </p>
             </div>
           </div>
@@ -88,21 +88,22 @@ npm run dev
           <button
             type="button"
             onClick={onClose}
-            className="p-1.5 rounded-lg hover:bg-neutral-200/60 dark:hover:bg-neutral-800 text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-200 transition-colors"
+            aria-label="Fechar painel de conexão"
+            className="flex h-9 w-9 items-center justify-center rounded-full text-[#8e8e93] transition-colors hover:bg-[#f2f2f7] hover:text-[#1d1d1f]"
           >
             <X className="w-4 h-4" />
           </button>
         </div>
 
         {/* Navigation Tabs */}
-        <div className="px-5 pt-3 border-b border-black/[0.06] dark:border-white/[0.06] flex items-center gap-4 text-xs">
+        <div className="flex items-center gap-5 overflow-x-auto border-b border-[#e5e5ea] px-5 pt-3 text-[12px] sm:px-6">
           <button
             type="button"
             onClick={() => setActiveTab('status')}
             className={`pb-2.5 font-medium border-b-2 transition-colors ${
               activeTab === 'status'
                 ? 'border-[#007aff] text-[#007aff]'
-                : 'border-transparent text-neutral-500 hover:text-neutral-800 dark:hover:text-neutral-200'
+                : 'border-transparent text-[#86868b] hover:text-[#1d1d1f]'
             }`}
           >
             Status da Conexão
@@ -113,11 +114,11 @@ npm run dev
             className={`pb-2.5 font-medium border-b-2 transition-colors flex items-center gap-1.5 ${
               activeTab === 'logs'
                 ? 'border-[#007aff] text-[#007aff]'
-                : 'border-transparent text-neutral-500 hover:text-neutral-800 dark:hover:text-neutral-200'
+                : 'border-transparent text-[#86868b] hover:text-[#1d1d1f]'
             }`}
           >
             <span>Tráfego de Pacotes</span>
-            <span className="px-1.5 py-0.2 rounded-full bg-neutral-200 dark:bg-neutral-700 text-[10px]">
+            <span className="rounded-full bg-[#f2f2f7] px-1.5 py-0.5 text-[10px] text-[#6e6e73]">
               {packetLogs.length}
             </span>
           </button>
@@ -127,7 +128,7 @@ npm run dev
             className={`pb-2.5 font-medium border-b-2 transition-colors ${
               activeTab === 'protocol'
                 ? 'border-[#007aff] text-[#007aff]'
-                : 'border-transparent text-neutral-500 hover:text-neutral-800 dark:hover:text-neutral-200'
+                : 'border-transparent text-[#86868b] hover:text-[#1d1d1f]'
             }`}
           >
             Especificação do Protocolo
@@ -135,17 +136,17 @@ npm run dev
         </div>
 
         {/* Tab Content */}
-        <div className="flex-1 overflow-y-auto p-5 text-xs space-y-4">
+        <div className="flex-1 space-y-4 overflow-y-auto p-5 text-xs sm:p-6">
           {activeTab === 'status' && (
             <div className="space-y-4">
               {/* Connection Status Banner */}
               <div
-                className={`p-4 rounded-xl border flex items-start gap-3 ${
+                className={`flex items-start gap-3 rounded-2xl border p-4 ${
                   wsStatus === 'connected'
-                    ? 'bg-emerald-50 dark:bg-emerald-950/20 border-emerald-200 dark:border-emerald-800/40 text-emerald-900 dark:text-emerald-200'
+                    ? 'border-[#b7ebc6] bg-[#f0fbf3] text-[#1d6b36]'
                     : wsStatus === 'connecting'
-                    ? 'bg-amber-50 dark:bg-amber-950/20 border-amber-200 dark:border-amber-800/40 text-amber-900 dark:text-amber-200'
-                    : 'bg-blue-50 dark:bg-blue-950/20 border-blue-200 dark:border-blue-800/40 text-blue-900 dark:text-blue-200'
+                    ? 'border-[#f7d9a4] bg-[#fff9ed] text-[#8a5b00]'
+                    : 'border-[#cfe2ff] bg-[#f2f7ff] text-[#164f9c]'
                 }`}
               >
                 {wsStatus === 'connected' ? (
@@ -155,14 +156,14 @@ npm run dev
                 )}
 
                 <div className="space-y-1">
-                  <h4 className="font-semibold text-sm">
+                  <h4 className="text-[14px] font-semibold">
                     {wsStatus === 'connected'
                       ? 'Conectado ao Servidor WebSocket!'
                       : wsStatus === 'connecting'
                       ? 'Conectando ao servidor WebSocket...'
                       : 'Modo Simulador Interativo Ativo'}
                   </h4>
-                  <p className="text-[11px] leading-relaxed opacity-90">
+                  <p className="text-[12px] leading-relaxed opacity-90">
                     {wsStatus === 'connected'
                       ? 'O frontend está se comunicando em tempo real com seu servidor Node.js.'
                       : 'Inicie o servidor com npm start depois de compilar a interface. No desenvolvimento, use npm run dev:server e npm run dev em dois terminais. A interface fica em modo simulado enquanto não houver conexão.'}
@@ -172,7 +173,7 @@ npm run dev
 
               {/* URL input */}
               <div className="space-y-1.5">
-                <label className="font-semibold text-neutral-700 dark:text-neutral-300">
+                <label className="font-semibold text-[#3a3a3c]">
                   URL do Servidor WebSocket (ws:// ou wss://)
                 </label>
                 <div className="flex gap-2">
@@ -181,12 +182,12 @@ npm run dev
                     value={inputUrl}
                     onChange={(e) => setInputUrl(e.target.value)}
                     placeholder="ws://localhost:3000/ws"
-                    className="flex-1 px-3 py-2 rounded-xl bg-neutral-100 dark:bg-neutral-800 border border-neutral-300 dark:border-neutral-700 font-mono text-xs focus:outline-none focus:border-[#007aff]"
+                    className="min-w-0 flex-1 rounded-xl border border-[#d2d2d7] bg-[#f5f5f7] px-3 py-2.5 font-mono text-[12px] text-[#1d1d1f] focus:border-[#007aff] focus:outline-none focus:ring-4 focus:ring-[#007aff]/10"
                   />
                   <button
                     type="button"
                     onClick={handleSaveAndConnect}
-                    className="px-4 py-2 rounded-xl bg-[#007aff] hover:bg-[#006ee6] text-white font-medium flex items-center gap-1.5 transition-colors"
+                    className="flex items-center gap-1.5 rounded-full bg-[#007aff] px-4 py-2 text-[12px] font-medium text-white transition-colors hover:bg-[#006ee6]"
                   >
                     <RefreshCw className="w-3.5 h-3.5" />
                     <span>Conectar</span>
@@ -195,13 +196,13 @@ npm run dev
               </div>
 
               {/* Multi-user local testing tip */}
-              <div className="p-3.5 rounded-xl bg-neutral-100 dark:bg-neutral-800/60 border border-black/[0.06] dark:border-white/[0.06] space-y-1.5">
-                <div className="flex items-center gap-1.5 font-semibold text-neutral-800 dark:text-neutral-200">
+              <div className="space-y-1.5 rounded-2xl border border-[#e5e5ea] bg-[#f9f9fb] p-4">
+                <div className="flex items-center gap-1.5 font-semibold text-[#3a3a3c]">
                   <CheckCircle2 className="w-3.5 h-3.5 text-[#007aff]" />
                   <span>Como testar múltiplos usuários agora mesmo</span>
                 </div>
-                <p className="text-[11px] text-neutral-600 dark:text-neutral-400 leading-relaxed">
-                  Utilize o seletor de usuário na barra superior da janela Apple (ao lado dos botões de fechar). Você pode trocar entre <strong>Steve Jobs</strong>, <strong>Tim Cook</strong>, <strong>Craig Federighi</strong> e <strong>Jony Ive</strong> a qualquer momento para disparar mensagens e respostas de qualquer participante.
+                <p className="text-[12px] leading-relaxed text-[#6e6e73]">
+                  Use o seletor de perfil no canto superior direito. Abra o app em duas abas e escolha um perfil diferente em cada uma para trocar mensagens.
                 </p>
               </div>
             </div>
@@ -209,12 +210,12 @@ npm run dev
 
           {activeTab === 'logs' && (
             <div className="space-y-2">
-              <p className="text-[11px] text-neutral-500">
+              <p className="text-[12px] text-[#86868b]">
                 Histórico em tempo real de pacotes JSON enviados e recebidos:
               </p>
 
               {packetLogs.length === 0 ? (
-                <div className="py-8 text-center text-neutral-400">
+                <div className="py-8 text-center text-[#8e8e93]">
                   Nenhum pacote trafegado ainda. Envie uma mensagem no chat para ver o log.
                 </div>
               ) : (
@@ -222,7 +223,7 @@ npm run dev
                   {packetLogs.map((log) => (
                     <div
                       key={log.id}
-                      className="p-2 rounded-lg bg-neutral-100 dark:bg-neutral-800/80 border border-black/[0.04] dark:border-white/[0.04]"
+                      className="rounded-xl border border-[#e5e5ea] bg-[#f9f9fb] p-3"
                     >
                       <div className="flex items-center justify-between mb-1">
                         <span
@@ -234,9 +235,9 @@ npm run dev
                         >
                           {log.direction === 'out' ? 'ENVIADO (OUT)' : 'RECEBIDO (IN)'} • {log.packet.type}
                         </span>
-                        <span className="text-neutral-400 text-[10px]">{log.time}</span>
+                        <span className="text-[10px] text-[#8e8e93]">{log.time}</span>
                       </div>
-                      <pre className="text-[10px] text-neutral-700 dark:text-neutral-300 overflow-x-auto p-1 bg-white/50 dark:bg-black/20 rounded">
+                      <pre className="overflow-x-auto rounded-lg bg-white p-2 text-[10px] text-[#3a3a3c]">
                         {JSON.stringify(log.packet.payload, null, 2)}
                       </pre>
                     </div>
@@ -249,20 +250,20 @@ npm run dev
           {activeTab === 'protocol' && (
             <div className="space-y-3">
               <div className="flex items-center justify-between">
-                <span className="font-semibold text-neutral-800 dark:text-neutral-200">
+                <span className="text-[13px] font-semibold text-[#1d1d1f]">
                   Como iniciar o servidor Node.js
                 </span>
                 <button
                   type="button"
                   onClick={copyToClipboard}
-                  className="flex items-center gap-1 text-[11px] text-[#007aff] hover:underline"
+                  className="flex items-center gap-1 rounded-full px-2 py-1 text-[11px] font-medium text-[#007aff] hover:bg-[#f2f7ff]"
                 >
                   {copied ? <Check className="w-3.5 h-3.5 text-emerald-500" /> : <Copy className="w-3.5 h-3.5" />}
                   <span>{copied ? 'Copiado!' : 'Copiar comandos'}</span>
                 </button>
               </div>
 
-              <pre className="p-3 rounded-xl bg-neutral-900 text-neutral-100 font-mono text-[10px] overflow-x-auto leading-relaxed border border-neutral-700">
+              <pre className="overflow-x-auto rounded-2xl border border-[#2c2c2e] bg-[#1d1d1f] p-4 font-mono text-[11px] leading-relaxed text-[#f5f5f7]">
                 {sampleServerCode}
               </pre>
             </div>
@@ -270,11 +271,11 @@ npm run dev
         </div>
 
         {/* Footer */}
-        <div className="h-12 border-t border-black/[0.08] dark:border-white/[0.08] px-5 flex items-center justify-end bg-neutral-50 dark:bg-[#1f1f22]">
+        <div className="flex h-[68px] items-center justify-end border-t border-[#e5e5ea] bg-[#fafafd] px-5 sm:px-6">
           <button
             type="button"
             onClick={onClose}
-            className="px-4 py-1.5 rounded-lg bg-neutral-200 dark:bg-neutral-700 hover:bg-neutral-300 dark:hover:bg-neutral-600 text-neutral-800 dark:text-neutral-200 font-medium transition-colors"
+            className="rounded-full bg-[#f2f2f7] px-5 py-2 text-[13px] font-medium text-[#3a3a3c] transition-colors hover:bg-[#e5e5ea]"
           >
             Fechar
           </button>

@@ -86,17 +86,17 @@ export const MessageInput: FC<MessageInputProps> = ({
   };
 
   return (
-    <div className="p-3 bg-white/70 dark:bg-[#1e1e20]/80 backdrop-blur-xl border-t border-black/[0.08] dark:border-white/[0.08] relative select-none">
+    <div className="relative shrink-0 border-t border-[#e5e5ea] bg-white px-4 py-4 sm:px-7">
       {/* Attachment popover */}
       {showAttachMenu && (
-        <div className="absolute bottom-16 left-4 bg-white/95 dark:bg-[#252528]/95 backdrop-blur-2xl rounded-2xl p-2 shadow-2xl border border-black/10 dark:border-white/10 z-30 animate-in fade-in zoom-in-95 duration-100 w-56">
+        <div className="absolute bottom-[76px] left-5 z-30 w-60 animate-in fade-in zoom-in-95 rounded-2xl border border-black/[0.06] bg-white p-2 shadow-[0_14px_40px_rgba(0,0,0,0.16)] duration-100 sm:left-8">
           <div className="space-y-1">
             <button
               type="button"
               onClick={() =>
                 handleSendImageSample(
-                  'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=800&auto=format&fit=crop&q=80',
-                  ' Mockup do MacBook Pro Sonoma'
+                  'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?w=800&auto=format&fit=crop&q=80',
+                  'Foto de exemplo'
                 )
               }
               className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs text-neutral-800 dark:text-neutral-200 hover:bg-[#007aff] hover:text-white transition-colors"
@@ -133,29 +133,29 @@ export const MessageInput: FC<MessageInputProps> = ({
       )}
 
       {/* Main Apple Input Bar */}
-      <div className="flex items-center gap-2 max-w-4xl mx-auto">
+      <div className="mx-auto flex max-w-4xl items-end gap-2.5">
         {/* Plus / App Store button */}
         <button
           type="button"
           onClick={() => setShowAttachMenu(!showAttachMenu)}
           aria-label="Adicionar anexo"
-          className={`w-8 h-8 rounded-full flex items-center justify-center transition-all ${
+          className={`mb-1 flex h-9 w-9 shrink-0 items-center justify-center rounded-full transition-all ${
             showAttachMenu
-              ? 'bg-[#007aff] text-white rotate-45'
-              : 'bg-neutral-200/80 dark:bg-neutral-800/80 hover:bg-neutral-300 dark:hover:bg-neutral-700 text-neutral-600 dark:text-neutral-300'
+              ? 'rotate-45 bg-[#007aff] text-white'
+              : 'bg-[#f2f2f7] text-[#6e6e73] hover:bg-[#e5e5ea]'
           }`}
         >
           <Plus className="w-4 h-4 transition-transform" />
         </button>
 
         {/* Input or Voice Recording Bar */}
-        <div className="flex-1 min-h-[38px] max-h-32 rounded-2xl bg-neutral-200/60 dark:bg-neutral-800/80 border border-neutral-300/40 dark:border-neutral-700/50 flex items-center px-3 py-1.5 focus-within:bg-white dark:focus-within:bg-neutral-900 focus-within:border-[#007aff]/60 transition-all">
+        <div className="flex min-h-[46px] max-h-36 flex-1 items-center rounded-[20px] border border-[#e5e5ea] bg-[#f5f5f7] px-4 py-2 transition focus-within:border-[#007aff]/50 focus-within:bg-white focus-within:ring-4 focus-within:ring-[#007aff]/[0.08]">
           {isRecording ? (
             <div className="flex-1 flex items-center justify-between py-1">
               <div className="flex items-center gap-2">
                 <span className="w-2.5 h-2.5 rounded-full bg-red-500 animate-ping" />
                 <span className="text-xs font-mono text-red-500 font-semibold">
-                  Gravando áudio (0:0{recordingSeconds})
+                  Gravando áudio ({Math.floor(recordingSeconds / 60)}:{String(recordingSeconds % 60).padStart(2, '0')})
                 </span>
               </div>
               <div className="flex items-center gap-1.5">
@@ -186,8 +186,8 @@ export const MessageInput: FC<MessageInputProps> = ({
                 e.target.style.height = `${Math.min(e.target.scrollHeight, 120)}px`;
               }}
               onKeyDown={handleKeyDown}
-              placeholder="iMessage"
-              className="w-full bg-transparent resize-none text-[14px] text-neutral-900 dark:text-neutral-100 placeholder-neutral-400 dark:placeholder-neutral-500 focus:outline-none leading-relaxed"
+              placeholder="Mensagem"
+              className="w-full resize-none bg-transparent text-[14px] leading-relaxed text-[#1d1d1f] placeholder:text-[#8e8e93] focus:outline-none"
             />
           )}
 
@@ -197,23 +197,23 @@ export const MessageInput: FC<MessageInputProps> = ({
               onClick={() => setIsRecording(true)}
               aria-label="Gravar áudio"
               title="Gravar mensagem de voz"
-              className="ml-2 text-neutral-400 hover:text-[#007aff] transition-colors p-1"
+              className="ml-2 rounded-full p-1 text-[#8e8e93] transition-colors hover:text-[#007aff]"
             >
               <Mic className="w-4 h-4" />
             </button>
           )}
         </div>
 
-        {/* Send Button (Apple Blue Circle with Up Arrow) */}
+        {/* Send Button */}
         <button
           type="button"
           onClick={handleSend}
           disabled={!text.trim()}
           aria-label="Enviar mensagem"
-          className={`w-8 h-8 rounded-full flex items-center justify-center transition-all ${
+          className={`mb-1 flex h-9 w-9 shrink-0 items-center justify-center rounded-full transition-all ${
             text.trim()
-              ? 'bg-[#007aff] hover:bg-[#006ee6] text-white shadow-md active:scale-95'
-              : 'bg-neutral-300/60 dark:bg-neutral-800 text-neutral-400 dark:text-neutral-600 cursor-not-allowed'
+              ? 'bg-[#007aff] text-white shadow-[0_2px_7px_rgba(0,122,255,0.25)] hover:bg-[#006ee6] active:scale-95'
+              : 'cursor-not-allowed bg-[#f2f2f7] text-[#c7c7cc]'
           }`}
         >
           <ArrowUp className="w-4 h-4 stroke-[2.5]" />

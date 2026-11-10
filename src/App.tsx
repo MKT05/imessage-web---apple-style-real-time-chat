@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useWebSocketChat } from './hooks/useWebSocketChat';
 import { filterConversations } from './utils/chatLogic';
-import { MacWindowHeader } from './components/MacWindowHeader';
+import { AppToolbar } from './components/AppToolbar';
 import { Sidebar } from './components/Sidebar';
 import { ChatHeader } from './components/ChatHeader';
 import { MessageList } from './components/MessageList';
@@ -11,17 +11,11 @@ import { WebSocketModal } from './components/WebSocketModal';
 import { NewChatModal } from './components/NewChatModal';
 
 export default function App() {
-  const [darkMode, setDarkMode] = useState<boolean>(() => {
-    if (typeof window !== 'undefined') {
-      return window.matchMedia('(prefers-color-scheme: dark)').matches;
-    }
-    return true;
-  });
-
   const [searchQuery, setSearchQuery] = useState('');
   const [infoOpen, setInfoOpen] = useState(false);
   const [wsModalOpen, setWsModalOpen] = useState(false);
   const [newChatModalOpen, setNewChatModalOpen] = useState(false);
+  const [mobileChatOpen, setMobileChatOpen] = useState(false);
 
   const {
     conversations,
@@ -50,15 +44,6 @@ export default function App() {
     clearCurrentChat,
   } = useWebSocketChat();
 
-  // Apply dark mode class to root document element
-  useEffect(() => {
-    if (darkMode) {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-    }
-  }, [darkMode]);
-
   // Filter conversations based on user search
   const filteredConversations = filterConversations(conversations, searchQuery);
 
@@ -80,12 +65,9 @@ export default function App() {
   };
 
   return (
-    <div className="w-screen h-screen flex flex-col items-center justify-center p-2 sm:p-4 bg-gradient-to-br from-[#d4d8e0] via-[#e2e6ee] to-[#cbd2de] dark:from-[#111113] dark:via-[#18181b] dark:to-[#0d0d0f] text-neutral-900 dark:text-neutral-100 overflow-hidden font-sans">
-      {/* macOS Main Window Frame */}
-      <div className="w-full h-full max-w-6xl max-h-[920px] rounded-2xl shadow-2xl border border-black/10 dark:border-white/10 flex flex-col overflow-hidden mac-glass transition-colors">
-        {/* Apple Window Title Bar */}
-        <MacWindowHeader
-          title={activeChat ? activeChat.name : 'Mensagens'}
+    <div className="app-background h-[100dvh] w-screen overflow-hidden text-[#1d1d1f]">
+      <div className="flex h-full min-h-0 flex-col overflow-hidden">
+        <AppToolbar
           currentUser={currentUser}
           allUsers={allUsers}
           onSwitchUser={switchActiveUser}
@@ -93,30 +75,26 @@ export default function App() {
           simulatedMode={simulatedMode}
           soundEnabled={soundEnabled}
           onToggleSound={() => setSoundEnabled(!soundEnabled)}
-          darkMode={darkMode}
-          onToggleDarkMode={() => setDarkMode(!darkMode)}
           onOpenWsModal={() => setWsModalOpen(true)}
           autoReplyEnabled={autoReplyEnabled}
           onToggleAutoReply={() => setAutoReplyEnabled(!autoReplyEnabled)}
         />
 
-        {/* Window Content Split */}
-        <div className="flex-1 flex overflow-hidden relative">
-          {/* Left Sidebar */}
+        <div className="relative flex min-h-0 flex-1 overflow-hidden bg-white">
           <Sidebar
+            className={mobileChatOpen ? 'hidden md:flex' : 'flex'}
             conversations={filteredConversations}
             activeChatId={activeChatId}
             onSelectChat={(id) => {
               setActiveChatId(id);
-              // mark unread as 0
+              setMobileChatOpen(true);
             }}
             onNewChat={() => setNewChatModalOpen(true)}
             searchQuery={searchQuery}
             onSearchChange={setSearchQuery}
           />
 
-          {/* Center Chat View */}
-          <main className="flex-1 flex flex-col h-full bg-white/40 dark:bg-[#161618]/40 backdrop-blur-md relative overflow-hidden">
+          <main className={`${mobileChatOpen ? 'flex' : 'hidden md:flex'} relative min-w-0 flex-1 flex-col overflow-hidden bg-white`}>
             {activeChat ? (
               <>
                 <ChatHeader
@@ -124,6 +102,7 @@ export default function App() {
                   infoOpen={infoOpen}
                   onToggleInfo={() => setInfoOpen(!infoOpen)}
                   onSimulateIncoming={handleSimulateIncoming}
+                  onBack={() => setMobileChatOpen(false)}
                 />
 
                 <MessageList
@@ -146,7 +125,6 @@ export default function App() {
             )}
           </main>
 
-          {/* Right Info Drawer (Collapsible) */}
           {infoOpen && activeChat && (
             <ChatInfoDrawer
               conversation={activeChat}
@@ -177,6 +155,7 @@ export default function App() {
         currentUserId={currentUser.id}
         onCreateChat={(name, participants, isGroup) => {
           createConversation(name, participants, isGroup);
+          setMobileChatOpen(true);
         }}
       />
     </div>

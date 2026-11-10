@@ -15,7 +15,7 @@ export const INITIAL_USERS: User[] = [
     avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80',
     color: '#5856d6',
     isOnline: true,
-    statusText: 'No Apple Park ',
+    statusText: 'No escritório',
   },
   {
     id: 'user_craig',
@@ -38,10 +38,10 @@ export const INITIAL_USERS: User[] = [
 export const INITIAL_CONVERSATIONS: ChatConversation[] = [
   {
     id: 'chat_group_keynote',
-    name: 'Equipe Apple Design',
+    name: 'Equipe de Design',
     isGroup: true,
     isPinned: true,
-    avatar: 'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=150&auto=format&fit=crop&q=80',
+    avatar: '',
     participants: INITIAL_USERS,
     unreadCount: 0,
     lastMessage: 'Craig: As transições do macOS ficaram perfeitas! 🚀',

@@ -33,10 +33,11 @@ export const MessageList: FC<MessageListProps> = ({
 
   return (
     <div
-      className="flex-1 overflow-y-auto px-4 py-4 space-y-1.5"
+      className="min-h-0 flex-1 overflow-y-auto bg-white px-4 py-5 sm:px-8"
       onClick={() => setActiveTapbackMsgId(null)}
     >
-      {groupedItems.map((item, index) => {
+      <div className="mx-auto w-full max-w-[860px] space-y-1.5">
+      {groupedItems.map((item) => {
         const { message, isLastInGroup, showAvatar, showSenderName, showDateDivider, dateDividerText } = item;
         const isMe = message.senderId === currentUserId;
         const hasReactions = message.reactions && Object.keys(message.reactions).length > 0;
@@ -52,7 +53,7 @@ export const MessageList: FC<MessageListProps> = ({
             {/* Date divider */}
             {showDateDivider && dateDividerText && (
               <div className="py-3 flex justify-center">
-                <span className="text-[11px] font-medium text-neutral-400 dark:text-neutral-500 bg-black/[0.04] dark:bg-white/[0.06] px-2.5 py-0.5 rounded-full backdrop-blur-sm">
+                <span className="rounded-full bg-[#f5f5f7] px-3 py-1 text-[11px] font-medium text-[#86868b]">
                   {dateDividerText}
                 </span>
               </div>
@@ -60,7 +61,7 @@ export const MessageList: FC<MessageListProps> = ({
 
             {/* Sender name in group chat for incoming clusters */}
             {showSenderName && !isMe && (
-              <span className="text-[11px] font-semibold text-neutral-500 dark:text-neutral-400 ml-9 mt-3 mb-1">
+              <span className="mb-1 ml-10 mt-3 text-[11px] font-semibold text-[#6e6e73]">
                 {message.senderName}
               </span>
             )}
@@ -88,7 +89,7 @@ export const MessageList: FC<MessageListProps> = ({
 
               {/* Tapback trigger button on hover */}
               <div
-                className={`opacity-0 group-hover/row:opacity-100 transition-opacity flex items-center ${
+              className={`flex items-center opacity-100 transition-opacity sm:opacity-0 sm:group-hover/row:opacity-100 ${
                   isMe ? 'order-first mr-1' : 'order-last ml-1'
                 }`}
               >
@@ -100,7 +101,7 @@ export const MessageList: FC<MessageListProps> = ({
                     e.stopPropagation();
                     setActiveTapbackMsgId(isTapbackOpen ? null : message.id);
                   }}
-                  className="p-1 rounded-full text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-200 hover:bg-neutral-200/60 dark:hover:bg-neutral-700/60 transition-colors"
+                  className="rounded-full p-1 text-[#8e8e93] transition-colors hover:bg-[#f2f2f7] hover:text-[#3a3a3c]"
                 >
                   <Smile className="w-4 h-4" />
                 </button>
@@ -108,7 +109,7 @@ export const MessageList: FC<MessageListProps> = ({
 
               {/* Message Bubble Container */}
               <div
-                className="relative max-w-[70%] sm:max-w-[62%]"
+                className="relative max-w-[82%] sm:max-w-[68%]"
                 onDoubleClick={(e) => {
                   e.stopPropagation();
                   setActiveTapbackMsgId(message.id);
@@ -128,12 +129,12 @@ export const MessageList: FC<MessageListProps> = ({
                 <div
                   className={`relative px-4 py-2 text-[14px] leading-relaxed shadow-sm transition-all ${
                     isMe
-                      ? `bg-gradient-to-b from-[#007aff] to-[#006ee6] text-white ${
+                    ? `bg-[#007aff] text-white shadow-[0_2px_8px_rgba(0,122,255,0.13)] ${
                           isLastInGroup
                             ? 'rounded-2xl rounded-br-[4px]'
                             : 'rounded-2xl'
                         }`
-                      : `bg-[#e9e9eb] dark:bg-[#262629] text-neutral-900 dark:text-neutral-100 ${
+                      : `bg-[#f2f2f7] text-[#1d1d1f] ${
                           isLastInGroup
                             ? 'rounded-2xl rounded-bl-[4px]'
                             : 'rounded-2xl'
@@ -162,7 +163,7 @@ export const MessageList: FC<MessageListProps> = ({
                   <div
                     className={`absolute -top-3 ${
                       isMe ? 'right-2' : 'left-2'
-                    } flex items-center gap-0.5 bg-white/95 dark:bg-[#323235]/95 shadow-md px-1.5 py-0.5 rounded-full border border-black/10 dark:border-white/10 z-10 animate-in fade-in zoom-in-75 duration-100 cursor-pointer hover:scale-105`}
+                    } z-10 flex cursor-pointer items-center gap-0.5 rounded-full border border-black/[0.05] bg-white px-1.5 py-0.5 shadow-[0_3px_12px_rgba(0,0,0,0.12)] animate-in fade-in zoom-in-75 duration-100 hover:scale-105`}
                     onClick={(e) => {
                       e.stopPropagation();
                       setActiveTapbackMsgId(message.id);
@@ -172,7 +173,7 @@ export const MessageList: FC<MessageListProps> = ({
                       <span key={emoji} className="flex items-center text-xs">
                         <span>{emoji}</span>
                         {users.length > 1 && (
-                          <span className="text-[10px] font-bold text-neutral-600 dark:text-neutral-300 ml-0.5">
+                          <span className="ml-0.5 text-[10px] font-bold text-[#6e6e73]">
                             {users.length}
                           </span>
                         )}
@@ -186,7 +187,7 @@ export const MessageList: FC<MessageListProps> = ({
             {/* Apple Status Indicator under the last outgoing message */}
             {isMe && isLastInGroup && (
               <div className="flex justify-end pr-1 mt-0.5">
-                <span className="text-[10px] font-medium text-neutral-400 dark:text-neutral-500 tracking-tight flex items-center gap-1">
+                <span className="flex items-center gap-1 text-[10px] font-medium tracking-tight text-[#8e8e93]">
                   {message.status === 'read' ? (
                     <>
                       <span>Lida</span>
@@ -195,12 +196,12 @@ export const MessageList: FC<MessageListProps> = ({
                   ) : message.status === 'delivered' ? (
                     <>
                       <span>Entregue</span>
-                      <Check className="w-3 h-3 text-neutral-400" />
+                      <Check className="h-3 w-3 text-[#8e8e93]" />
                     </>
                   ) : message.status === 'sent' ? (
                     <>
                       <span>Enviada</span>
-                      <Check className="w-3 h-3 text-neutral-400" />
+                      <Check className="h-3 w-3 text-[#8e8e93]" />
                     </>
                   ) : (
                     <span>Enviando...</span>
@@ -216,18 +217,19 @@ export const MessageList: FC<MessageListProps> = ({
       {typingUsers.length > 0 && (
         <div className="flex items-end gap-2 pt-1 animate-in fade-in duration-200">
           <div className="w-7 h-7 flex-shrink-0" />
-          <div className="bg-[#e9e9eb] dark:bg-[#262629] px-3.5 py-2.5 rounded-2xl rounded-bl-[4px] shadow-sm flex items-center gap-1">
+          <div className="flex items-center gap-1 rounded-2xl rounded-bl-[5px] bg-[#f2f2f7] px-3.5 py-2.5">
             <span className="w-2 h-2 rounded-full bg-neutral-400 dark:bg-neutral-500 animate-bounce [animation-delay:-0.3s]" />
             <span className="w-2 h-2 rounded-full bg-neutral-400 dark:bg-neutral-500 animate-bounce [animation-delay:-0.15s]" />
             <span className="w-2 h-2 rounded-full bg-neutral-400 dark:bg-neutral-500 animate-bounce" />
           </div>
-          <span className="text-[11px] text-neutral-400 dark:text-neutral-500">
+          <span className="text-[11px] text-[#86868b]">
             {typingUsers.join(', ')} digitando...
           </span>
         </div>
       )}
 
       <div ref={scrollEndRef} className="h-2" />
+      </div>
     </div>
   );
 };
