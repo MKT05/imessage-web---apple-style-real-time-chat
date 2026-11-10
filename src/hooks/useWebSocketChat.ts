@@ -40,7 +40,10 @@ export function useWebSocketChat() {
   const [soundEnabled, setSoundEnabled] = useState<boolean>(true);
 
   // WebSocket connection state
-  const [wsUrl, setWsUrl] = useState<string>('ws://localhost:3000/ws');
+  const [wsUrl, setWsUrl] = useState<string>(() => {
+    const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+    return `${protocol}//${window.location.host}/ws`;
+  });
   const [wsStatus, setWsStatus] = useState<'connected' | 'connecting' | 'disconnected'>('disconnected');
   const [simulatedMode, setSimulatedMode] = useState<boolean>(true);
   const [autoReplyEnabled, setAutoReplyEnabled] = useState<boolean>(true);

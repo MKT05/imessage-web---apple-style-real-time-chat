@@ -2,6 +2,8 @@ node_modules/
 build/
 dist/
 coverage/
+messages.json
+messages.json.tmp
 .DS_Store
 *.log
 .env*

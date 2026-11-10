@@ -44,44 +44,15 @@ export const WebSocketModal: FC<WebSocketModalProps> = ({
     onReconnect(inputUrl);
   };
 
-  const sampleServerCode = `// server.js (Node.js + ws + express)
-import express from 'express';
-import { createServer } from 'http';
-import { WebSocketServer, WebSocket } from 'ws';
-import fs from 'fs';
+  const sampleServerCode = `# Modo de execução completo
+npm run build
+npm start
 
-const app = express();
-const server = createServer(app);
-const wss = new WebSocketServer({ server, path: '/ws' });
+# Modo de desenvolvimento (use dois terminais)
+npm run dev:server
+npm run dev
 
-const DB_FILE = './messages.json';
-let db = { messages: {}, conversations: [] };
-if (fs.existsSync(DB_FILE)) {
-  db = JSON.parse(fs.readFileSync(DB_FILE, 'utf-8'));
-}
-
-wss.on('connection', (ws) => {
-  console.log('Cliente WebSocket conectado!');
-
-  ws.on('message', (raw) => {
-    const packet = JSON.parse(raw);
-    // Broadcast para todos os clientes conectados
-    wss.clients.forEach((client) => {
-      if (client.readyState === WebSocket.OPEN) {
-        client.send(JSON.stringify(packet));
-      }
-    });
-    // Persistência em JSON
-    if (packet.type === 'message') {
-      const msg = packet.payload;
-      if (!db.messages[msg.chatId]) db.messages[msg.chatId] = [];
-      db.messages[msg.chatId].push(msg);
-      fs.writeFileSync(DB_FILE, JSON.stringify(db, null, 2));
-    }
-  });
-});
-
-server.listen(3000, () => console.log('Servidor rodando em http://localhost:3000'));`;
+# Interface e WebSocket: http://localhost:3000 e ws://localhost:3000/ws`;
 
   const copyToClipboard = () => {
     navigator.clipboard.writeText(sampleServerCode);
@@ -194,7 +165,7 @@ server.listen(3000, () => console.log('Servidor rodando em http://localhost:3000
                   <p className="text-[11px] leading-relaxed opacity-90">
                     {wsStatus === 'connected'
                       ? 'O frontend está se comunicando em tempo real com seu servidor Node.js.'
-                      : 'Como você está desenvolvendo o backend Node.js separadamente, a interface funciona perfeitamente de forma simulada. Assim que seu servidor WebSocket estiver rodando na porta indicada abaixo, ele conectará automaticamente!'}
+                      : 'Inicie o servidor com npm start depois de compilar a interface. No desenvolvimento, use npm run dev:server e npm run dev em dois terminais. A interface fica em modo simulado enquanto não houver conexão.'}
                   </p>
                 </div>
               </div>
@@ -279,7 +250,7 @@ server.listen(3000, () => console.log('Servidor rodando em http://localhost:3000
             <div className="space-y-3">
               <div className="flex items-center justify-between">
                 <span className="font-semibold text-neutral-800 dark:text-neutral-200">
-                  Exemplo de Servidor WebSocket Node.js (ws + express)
+                  Como iniciar o servidor Node.js
                 </span>
                 <button
                   type="button"
@@ -287,7 +258,7 @@ server.listen(3000, () => console.log('Servidor rodando em http://localhost:3000
                   className="flex items-center gap-1 text-[11px] text-[#007aff] hover:underline"
                 >
                   {copied ? <Check className="w-3.5 h-3.5 text-emerald-500" /> : <Copy className="w-3.5 h-3.5" />}
-                  <span>{copied ? 'Copiado!' : 'Copiar Código'}</span>
+                  <span>{copied ? 'Copiado!' : 'Copiar comandos'}</span>
                 </button>
               </div>
 

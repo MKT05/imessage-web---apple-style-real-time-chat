@@ -1,6 +1,6 @@
 #  iMessage Web - Chat em Tempo Real (Estilo Apple)
 
-Uma aplicação de chat em tempo real com design inspirado no ecossistema Apple (**macOS & iOS iMessage**), desenvolvida com **React**, **TypeScript**, **Tailwind CSS**, suporte a **WebSockets** e modo simulador interativo para desenvolvimento.
+Uma aplicação web de chat em tempo real com interface inspirada no iMessage. O servidor em **Node.js** serve a interface, gerencia conexões **WebSocket** e persiste mensagens em `messages.json`.
 
 ---
 
@@ -9,7 +9,7 @@ Uma aplicação de chat em tempo real com design inspirado no ecossistema Apple 
 2. [Instalação das Dependências](#-instalação-das-dependências)
 3. [Como Executar a Aplicação](#-como-executar-a-aplicação)
 4. [Como Acessar no Navegador](#-como-acessar-no-navegador)
-5. [Como Implementar o seu Servidor Node.js (Backend)](#-como-implementar-o-seu-servidor-nodejs-backend)
+5. [Servidor Node.js e WebSocket](#-servidor-nodejs-e-websocket)
 6. [Estrutura da Persistência em JSON (`messages.json`)](#-estrutura-da-persistência-em-json-messagesjson)
 7. [Protocolo de Comunicação WebSocket](#-protocolo-de-comunicação-websocket)
 8. [Recursos Exclusivos da Interface](#-recursos-exclusivos-da-interface)
@@ -18,10 +18,11 @@ Uma aplicação de chat em tempo real com design inspirado no ecossistema Apple 
 
 ## 🚀 Visão Geral
 
-O frontend foi desenvolvido para funcionar tanto com um **servidor WebSocket real em Node.js** quanto em **modo simulador autônomo**. Isso permite que você teste imediatamente todas as interações visuais, troque de perfil de usuário e visualize pacotes trafegados enquanto desenvolve o seu backend!
+O projeto inclui o frontend e o backend integrados. Mensagens e reações são transmitidas aos outros clientes conectados; mensagens e reações ficam salvas em `messages.json`. Se o servidor WebSocket estiver indisponível, a interface também pode ser explorada em modo simulado.
 
 ### Tecnologias do Frontend:
 - **React 19** + **TypeScript**
+- **Node.js** + **Express** + **WebSocket (`ws`)**
 - **Tailwind CSS v4** com estética de vidro translúcido (*frosted glass*), tipografia San Francisco e gradientes oficiais da Apple
 - **Web Audio API**: Síntese nativa dos sons clássicos do iMessage (*Swoosh* de envio, *Pop* de recebimento e clique tátil de reações Tapback)
 - **Lucide Icons**
@@ -31,30 +32,24 @@ O frontend foi desenvolvido para funcionar tanto com um **servidor WebSocket rea
 
 ## 📦 Instalação das Dependências
 
-Certifique-se de ter o **Node.js 18+** instalado em seu sistema. No terminal, execute:
+Use **Node.js 20.19+ ou 22.12+**. Na pasta do projeto, instale todas as dependências:
 
 ```bash
 npm install
-```
-
-Caso queira instalar também o pacote `ws` para o seu servidor backend em Node.js:
-
-```bash
-npm install ws
 ```
 
 ---
 
 ## ⚡ Como Executar a Aplicação
 
-### 1. Iniciar o Frontend (Vite Dev Server)
-Para rodar a interface web com recarregamento rápido:
+Compile a interface e inicie o servidor Node.js integrado:
 
 ```bash
-npm run dev
+npm run build
+npm start
 ```
 
-O servidor local iniciará na porta `3000`.
+O servidor HTTP e WebSocket será iniciado na porta `3000`. Para usar outra porta, defina a variável de ambiente `PORT`.
 
 ---
 
@@ -66,126 +61,29 @@ Abra o seu navegador de preferência (Safari, Chrome, Edge, Firefox) e acesse:
 http://localhost:3000
 ```
 
+Para testar a troca entre várias pessoas, abra o endereço em duas abas ou janelas e escolha um perfil diferente em cada uma.
+
 ---
 
-## 🛠️ Como Implementar o seu Servidor Node.js (Backend)
+## 🛠️ Servidor Node.js e WebSocket
 
-Abaixo está um exemplo de referência para criar o arquivo `server.js` com suporte a **HTTP**, **WebSockets** e **persistência em `messages.json`**:
+O arquivo `server.js` é o backend executado por `npm start`. Ele serve os arquivos compilados de `dist/`, aceita conexões no endpoint `/ws`, retransmite mensagens, reações e indicadores de digitação aos demais clientes e envia o histórico ao conectar. Mensagens e reações são persistidas no arquivo `messages.json`, criado automaticamente na primeira execução.
 
-### Exemplo de `server.js`:
+### Desenvolvimento com recarregamento rápido
 
-```javascript
-import express from 'express';
-import { createServer } from 'http';
-import { WebSocketServer, WebSocket } from 'ws';
-import fs from 'fs';
-import path from 'path';
+Abra dois terminais na pasta do projeto. No primeiro, inicie o backend:
 
-const app = express();
-const server = createServer(app);
-const PORT = process.env.PORT || 3000;
-const DB_FILE = path.resolve('./messages.json');
-
-// Servir arquivos estáticos do frontend (após o build)
-app.use(express.static('dist'));
-app.use(express.json());
-
-// 1. Inicializar ou carregar banco de dados JSON
-let db = { messages: {}, conversations: [] };
-if (fs.existsSync(DB_FILE)) {
-  try {
-    db = JSON.parse(fs.readFileSync(DB_FILE, 'utf-8'));
-    console.log('📦 Banco messages.json carregado com sucesso!');
-  } catch (err) {
-    console.error('Erro ao ler messages.json:', err);
-  }
-}
-
-function saveDatabase() {
-  try {
-    fs.writeFileSync(DB_FILE, JSON.stringify(db, null, 2), 'utf-8');
-  } catch (err) {
-    console.error('Erro ao salvar messages.json:', err);
-  }
-}
-
-// 2. Configurar Servidor WebSocket
-const wss = new WebSocketServer({ server, path: '/ws' });
-
-wss.on('connection', (ws) => {
-  console.log('🟢 Novo cliente conectado via WebSocket');
-
-  // Enviar histórico sincronizado na conexão
-  ws.send(JSON.stringify({
-    type: 'history_sync',
-    payload: { messages: db.messages, conversations: db.conversations },
-    timestamp: Date.now()
-  }));
-
-  ws.on('message', (data) => {
-    try {
-      const packet = JSON.parse(data.toString());
-      console.log(`📩 Pacote recebido [${packet.type}]:`, packet.payload);
-
-      // Tratamento por tipo de evento
-      switch (packet.type) {
-        case 'message': {
-          const msg = packet.payload;
-          if (!db.messages[msg.chatId]) {
-            db.messages[msg.chatId] = [];
-          }
-          db.messages[msg.chatId].push(msg);
-          saveDatabase();
-          break;
-        }
-
-        case 'reaction': {
-          const { messageId, emoji, userId, chatId } = packet.payload;
-          const chatMsgs = db.messages[chatId] || [];
-          const target = chatMsgs.find((m) => m.id === messageId);
-          if (target) {
-            if (!target.reactions) target.reactions = {};
-            if (!target.reactions[emoji]) target.reactions[emoji] = [];
-
-            const idx = target.reactions[emoji].indexOf(userId);
-            if (idx > -1) {
-              target.reactions[emoji].splice(idx, 1);
-              if (target.reactions[emoji].length === 0) delete target.reactions[emoji];
-            } else {
-              target.reactions[emoji].push(userId);
-            }
-            saveDatabase();
-          }
-          break;
-        }
-
-        case 'typing':
-          // Apenas retransmite o evento de digitação sem persistir
-          break;
-      }
-
-      // Broadcast para todos os clientes conectados
-      wss.clients.forEach((client) => {
-        if (client.readyState === WebSocket.OPEN) {
-          client.send(JSON.stringify(packet));
-        }
-      });
-    } catch (err) {
-      console.error('Erro ao processar pacote WebSocket:', err);
-    }
-  });
-
-  ws.on('close', () => {
-    console.log('🔴 Cliente desconectado');
-  });
-});
-
-// 3. Iniciar Servidor HTTP
-server.listen(PORT, () => {
-  console.log(`🚀 Servidor rodando em http://localhost:${PORT}`);
-  console.log(`📡 WebSocket endpoint em ws://localhost:${PORT}/ws`);
-});
+```bash
+npm run dev:server
 ```
+
+No segundo, inicie o Vite:
+
+```bash
+npm run dev
+```
+
+Acesse `http://localhost:5173`. O Vite encaminha as conexões WebSocket ao backend na porta `3000`.
 
 ---
 
@@ -276,5 +174,5 @@ Suporta os 6 ícones Apple: `❤️`, `👍`, `👎`, `😂`, `‼️`, `❓`
 - 🔊 **Sons Apple Sintetizados:** Efeitos de áudio fiéis sem dependência de arquivos externos (Web Audio API).
 - 🎙️ **Mensagens de Áudio:** Gravador simulado com visualizador de ondas e reprodutor interativo.
 - 🔍 **Busca Instantânea:** Filtre conversas por nome de contato ou trecho de mensagens.
-- 🌙 **Modo Escuro & Claro:** Alternância suave com vidro translúcido (*backdrop-filter*).
+- 🌙 **Modo escuro:** Interface com vidro translúcido (*backdrop-filter*).
 - 🛠️ **Inspetor WebSocket:** Clique no chip de status na barra de título para ver o painel com tráfego de pacotes em tempo real e alterar a URL do servidor.
