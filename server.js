@@ -126,11 +126,21 @@ webSocketServer.on('connection', (client) => {
         if (typeof message.id !== 'string' || typeof message.chatId !== 'string') return;
 
         const chatMessages = (database.messages[message.chatId] ??= []);
-        if (!chatMessages.some((savedMessage) => savedMessage.id === message.id)) {
-          chatMessages.push(message);
-          saveDatabase();
+        const deliveredMessage = { ...message, status: 'delivered' };
+        const savedMessageIndex = chatMessages.findIndex((savedMessage) => savedMessage.id === message.id);
+        if (savedMessageIndex === -1) {
+          chatMessages.push(deliveredMessage);
+        } else {
+          chatMessages[savedMessageIndex] = deliveredMessage;
         }
-        broadcast(outgoingPacket, client);
+        saveDatabase();
+
+        sendPacket(client, {
+          type: 'status_update',
+          payload: { chatId: message.chatId, messageId: message.id, status: 'delivered' },
+          timestamp: Date.now(),
+        });
+        broadcast({ ...outgoingPacket, payload: deliveredMessage }, client);
         break;
       }
 

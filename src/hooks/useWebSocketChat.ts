@@ -173,6 +173,25 @@ export function useWebSocketChat() {
             break;
           }
 
+          case 'status_update': {
+            const { chatId, messageId, status } = packet.payload;
+            if (
+              typeof chatId !== 'string' ||
+              typeof messageId !== 'string' ||
+              !['sending', 'sent', 'delivered', 'read'].includes(status)
+            ) {
+              break;
+            }
+
+            setMessages((prev) => ({
+              ...prev,
+              [chatId]: (prev[chatId] || []).map((message) =>
+                message.id === messageId ? { ...message, status: status as Message['status'] } : message
+              ),
+            }));
+            break;
+          }
+
           case 'user_list': {
             if (Array.isArray(packet.payload.users)) {
               setAllUsers(packet.payload.users);
