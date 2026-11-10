@@ -197,6 +197,11 @@ export const MessageList: FC<MessageListProps> = ({
                       <span>Entregue</span>
                       <Check className="w-3 h-3 text-neutral-400" />
                     </>
+                  ) : message.status === 'sent' ? (
+                    <>
+                      <span>Enviada</span>
+                      <Check className="w-3 h-3 text-neutral-400" />
+                    </>
                   ) : (
                     <span>Enviando...</span>
                   )}

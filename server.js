@@ -23,11 +23,22 @@ function loadDatabase() {
     if (!fs.existsSync(databaseFile)) return createEmptyDatabase();
 
     const savedData = JSON.parse(fs.readFileSync(databaseFile, 'utf8'));
+    const messages =
+      savedData.messages && typeof savedData.messages === 'object' && !Array.isArray(savedData.messages)
+        ? savedData.messages
+        : {};
+
+    for (const chatMessages of Object.values(messages)) {
+      if (!Array.isArray(chatMessages)) continue;
+      for (const message of chatMessages) {
+        if (message && typeof message === 'object' && ['sending', 'sent'].includes(message.status)) {
+          message.status = 'delivered';
+        }
+      }
+    }
+
     return {
-      messages:
-        savedData.messages && typeof savedData.messages === 'object' && !Array.isArray(savedData.messages)
-          ? savedData.messages
-          : {},
+      messages,
       conversations: Array.isArray(savedData.conversations) ? savedData.conversations : [],
     };
   } catch (error) {
